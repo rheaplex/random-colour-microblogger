@@ -15,7 +15,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (require 'asdf)
-(asdf:oos 'asdf:load-op 'cl-twit)
+(asdf:oos 'asdf:load-op 'microblog-bot)
 
 (defmethod maybe (fun &key (probability 0.5) (default nil))
   "Call fun with args if random(0..1) is less than probability."
@@ -87,22 +87,39 @@
   (choose-one-of '("very faintly glowing" "faintly glowing" "glowing" "brightly glowing" "very brightly glowing")))
 
 (defun colour ()
-  (join-strings (maybe #'glow :probability 0.05) (maybe #'transparency :probability 0.05) (maybe #'polish :probability 0.05) (maybe #'highlight-colour :probability 0.05)
+  (join-strings (maybe #'glow :probability 0.05) 
+		(maybe #'transparency :probability 0.05) 
+		(maybe #'polish :probability 0.05) 
+		(maybe #'highlight-colour :probability 0.05)
 		(maybe #'gloss :probability 0.05) 
 		;; combined-hsv needs to be much lower probability
 		(if (< (random 1.0) 0.95)
 		    (hsv)
 		    (combined-hsv))))
 
-(defun run () 
-  (when (/= (length *posix-argv*) 3)
-    (format t "Please pass identi.ca username and password as command line arguents.~%")
-    (quit))
-  (setf *random-state* (make-random-state t))
+(defclass random-colour-bot (microblog-bot:microblog-bot)
+  ())
+
+(defmethod microblog-bot:respond-to-mention ((bot random-colour-bot) mention)
+  "Respond to the mention by plugging the source."
   (ignore-errors
-    (setf cl-twit::*source* "random-colour")
-    (setf cl-twit::*base-url* "http://identi.ca/api")
-    (cl-twit:with-session ((second *posix-argv*) (third *posix-argv*) :authenticatep t)
-      (cl-twit:update (colour))
-      (cl-twit:logout)))
-  (quit))
+    (cl-twit:update (format nil "@~a Hi! You can see my source code here - http://robmyers.org/git/?p=random-colour-microblogger.git" 
+			    (cl-twit:user-screen-name (cl-twit:status-user mention))))))
+
+(defmethod microblog-bot:constant-task ((bot random-colour-bot))
+  "Dent a possible artwork."
+    (twit:update (colour)))
+       
+(defun run-random-colour-bot (user password)
+  (setf *random-state* (make-random-state t))
+  (microblog-bot:set-microblog-service "http://identi.ca/api" "random-colour")
+  (let ((bot (make-instance 'random-colour-bot
+			    :nickname user	    
+			    :password password)))
+    (microblog-bot:run-bot bot)))
+
+(defun run ()
+  "Configure and run the bot."
+  (assert (>= (length sb-ext:*posix-argv*) 2))
+  (setf microblog-bot::*bot-sleep-time* (* 60 10))
+  (run-random-colour-bot (second sb-ext:*posix-argv*) (third sb-ext:*posix-argv*)))
