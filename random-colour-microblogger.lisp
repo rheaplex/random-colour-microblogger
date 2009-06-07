@@ -100,10 +100,11 @@
   (when (/= (length *posix-argv*) 3)
     (format t "Please pass identi.ca username and password as command line arguents.~%")
     (quit))
+  (setf *random-state* (make-random-state t))
   (ignore-errors
     (setf cl-twit::*source* "random-colour")
     (setf cl-twit::*base-url* "http://identi.ca/api")
     (cl-twit:with-session ((second *posix-argv*) (third *posix-argv*) :authenticatep t)
       (cl-twit:update (colour))
-      (cl-twit:logout))))
-
+      (cl-twit:logout)))
+  (quit))
