@@ -100,26 +100,25 @@
 (defclass random-colour-bot (microblog-bot:microblog-bot)
   ())
 
-(defmethod microblog-bot:respond-to-mention ((bot random-colour-bot) mention)
-  "Respond to the mention by plugging the source."
-  (ignore-errors
-    (cl-twit:update (format nil "@~a Hi! You can see my source code here - http://robmyers.org/git/?p=random-colour-microblogger.git" 
-			    (cl-twit:user-screen-name (cl-twit:status-user mention))))))
-
 (defmethod microblog-bot:constant-task ((bot random-colour-bot))
   "Dent a possible artwork."
     (twit:update (colour)))
-       
-(defun run-random-colour-bot (user password)
+
+(defun make-microblog-bot ()
+  "Make the bot."
+  (assert (>= (length sb-ext:*posix-argv*) 2))
   (setf *random-state* (make-random-state t))
-  (microblog-bot:set-microblog-service "http://identi.ca/api" "random-colour")
-  (let ((bot (make-instance 'random-colour-bot
-			    :nickname user	    
-			    :password password)))
-    (microblog-bot:run-bot bot)))
+  (microblog-bot:set-microblog-service "https://identi.ca/api" "random-colour")
+  (make-instance 'random-colour-bot
+		 :nickname (second sb-ext:*posix-argv*)
+		 :password (third sb-ext:*posix-argv*)
+		 :source-url "http://robmyers.org/git/?p=random-colour-microblogger.git"))
 
 (defun run ()
   "Configure and run the bot."
-  (assert (>= (length sb-ext:*posix-argv*) 2))
-  (setf microblog-bot::*bot-sleep-time* (* 60 10))
-  (run-random-colour-bot (second sb-ext:*posix-argv*) (third sb-ext:*posix-argv*)))
+  (microblog-bot:run-bot (make-microblog-bot)))
+
+(defun run-once ()
+  "Configure and run the bot just once."
+  (microblog-bot:run-bot-once (make-microblog-bot))
+  #+sbcl (quit))

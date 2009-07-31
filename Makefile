@@ -16,10 +16,9 @@
 
 all: random-colour-microblogger
 
-random-colour-microblogger: random-colour-microblogger.lisp
-	sbcl --noinform --load "random-colour-microblogger.lisp" \
-	--eval "(sb-ext:save-lisp-and-die \"random-colour-microblogger\" \
-		:executable t :toplevel #'run)"
+random-colour-microblogger:	random-colour-microblogger.lisp \
+				make.lisp
+	sbcl --load "./make.lisp"
 
 clean:
 	rm -f random-colour-microblogger
