@@ -1,4 +1,4 @@
-;; make.lisp -  Creates an executable version of random-colour-microblogger.
+;; make.lisp -  Creates an executable version of random-form-microblogger.
 ;; Copyright (C) 2009  Rob Myers rob@robmyers.org
 ;;
 ;; This program is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 ;;(require 'asdf)
 ;;(asdf:operate 'asdf:load-op :cl-twit)
 ;;(asdf:operate 'asdf:load-op :microblog-bot)
-(load "random-colour-microblogger.lisp")
+(load "random-form-microblogger.lisp")
 
 ;; Make the runnable image
 
-(sb-ext:save-lisp-and-die "random-colour-microblogger" 
+(sb-ext:save-lisp-and-die "random-form-microblogger" 
 			  :executable t 
 			  :toplevel #'run-once)
