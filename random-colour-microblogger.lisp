@@ -1,4 +1,4 @@
-;; randon-colour-microblogger.lisp - Microblog random colours.
+;; random-colour-microblogger.lisp - Microblog random colours.
 ;; Copyright (C) 2009  Rob Myers rob@robmyers.org
 ;;
 ;; This program is free software: you can redistribute it and/or modify
@@ -97,7 +97,7 @@
 		    (hsv)
 		    (combined-hsv))))
 
-(defclass random-colour-bot (microblog-bot:microblog-bot)
+(defclass random-colour-bot (microblog-bot:constant-task-bot)
   ())
 
 (defmethod microblog-bot:constant-task ((bot random-colour-bot))
