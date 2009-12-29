@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ $# -ne 2 ]; then 
+     echo "Cannot start. Pass user and password as args 1 and 2." > \
+	 /var/log/random-form-microblogger.log
+     exit 1
+fi
+
+detachtty --dribble-file /var/log/random-form-microblogger-dribble \
+	  --log-file /var/log/random-form-microblogger.log \
+	  --pid-file /var/run/random-form-microblogger.pid \
+  	  /var/run/random-form-microblogger-socket \
+    ./random-form-microblogger $1 $2
