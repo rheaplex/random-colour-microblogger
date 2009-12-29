@@ -1,4 +1,4 @@
-# Makefile -  The Makefile for random-colour-microblogger.
+# Makefile -  The Makefile for random-form-microblogger.
 # Copyright (C) 2009  Rob Myers rob@robmyers.org
 #
 # This program is free software: you can redistribute it and/or modify
@@ -14,14 +14,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-all: random-colour-microblogger
+all: random-form-microblogger
 
-random-colour-microblogger:	random-colour-microblogger.lisp \
+random-form-microblogger:	random-form-microblogger.lisp \
 				make.lisp
 	sbcl --load "./make.lisp"
 
 clean:
-	rm -f random-colour-microblogger
+	rm -f random-form-microblogger
 	rm -f *.fasl
 
 distclean: clean
