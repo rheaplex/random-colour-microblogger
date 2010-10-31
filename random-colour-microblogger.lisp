@@ -102,7 +102,7 @@
 
 (defmethod microblog-bot:constant-task ((bot random-colour-bot))
   "Dent a possible artwork."
-    (twit:update (colour)))
+    (microblog-bot:queue-update (colour)))
 
 (defun make-microblog-bot ()
   "Make the bot."
